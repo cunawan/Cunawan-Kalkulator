@@ -7,11 +7,12 @@
     <style>
         body { font-family: Arial, sans-serif; background-color: #fff9c4; padding: 10px; margin: 0; }
         table { width: 100%; border-collapse: collapse; background: #fffde7; margin-bottom: 15px; }
-        th, td { border: 1px solid #e0e0e0; padding: 10px 4px; text-align: center; }
-        th { background-color: #fbc02d; color: #333; font-size: 14px; }
-        input { width: 95%; padding: 6px 2px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 14px; box-sizing: border-box; }
-        .total-box { font-weight: bold; font-size: 20px; text-align: right; padding: 10px; background: #fff; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .btn-add { width: 100%; padding: 12px; background: #1976d2; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        th, td { border: 1px solid #e0e0e0; padding: 6px 2px; text-align: center; }
+        th { background-color: #fbc02d; color: #333; font-size: 13px; }
+        input { width: 95%; padding: 6px 2px; border: 1px solid #ddd; border-radius: 4px; text-align: center; font-size: 13px; box-sizing: border-box; }
+        .total-box { font-weight: bold; font-size: 18px; text-align: right; padding: 10px; background: #fff; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .btn-add { width: 100%; padding: 12px; background: #1976d2; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        .btn-delete { background: #e53935; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-weight: bold; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -19,11 +20,12 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 10%;">No</th>
-                <th style="width: 35%;">Nama Produk</th>
-                <th style="width: 20%;">Harga</th>
-                <th style="width: 15%;">Jumlah</th>
-                <th style="width: 20%;">Total</th>
+                <th style="width: 8%;">No</th>
+                <th style="width: 32%;">Nama Produk</th>
+                <th style="width: 22%;">Harga</th>
+                <th style="width: 13%;">Jumlah</th>
+                <th style="width: 17%;">Total</th>
+                <th style="width: 8%;">Aksi</th>
             </tr>
         </thead>
         <tbody id="tableBody">
@@ -34,6 +36,80 @@
         Total: Rp <span id="grandTotal">0</span>
     </div>
 
+    <button class="btn-add" onclick="addRow()">+ Tambah Baris</button>
+
+    <script>
+        function formatNumber(value) {
+            let number = value.replace(/\D/g, '');
+            return number ? parseInt(number, 10).toLocaleString('id-ID') : '';
+        }
+
+        function parseNumber(value) {
+            return parseFloat(value.replace(/\./g, '')) || 0;
+        }
+
+        function addRow() {
+            const tbody = document.getElementById('tableBody');
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <td class="row-number"></td>
+                <td><input type="text" placeholder="Barang" class="p-name"></td>
+                <td><input type="text" placeholder="0" class="p-price" oninput="handlePriceInput(this)"></td>
+                <td><input type="number" value="1" class="p-qty" oninput="calculateRow(this)"></td>
+                <td class="p-total" style="font-weight: bold;">0</td>
+                <td><button class="btn-delete" onclick="deleteRow(this)">X</button></td>
+            `;
+            tbody.appendChild(row);
+            updateRowNumbers();
+        }
+
+        function handlePriceInput(element) {
+            element.value = formatNumber(element.value);
+            calculateRow(element);
+        }
+
+        function calculateRow(element) {
+            const row = element.parentElement.parentElement;
+            const price = parseNumber(row.querySelector('.p-price').value);
+            const qty = parseFloat(row.querySelector('.p-qty').value) || 0;
+            const total = price * qty;
+            
+            row.querySelector('.p-total').innerText = total.toLocaleString('id-ID');
+            calculateGrandTotal();
+        }
+
+        function calculateGrandTotal() {
+            let grandTotal = 0;
+            const totals = document.querySelectorAll('.p-total');
+            totals.forEach(td => {
+                grandTotal += parseNumber(td.innerText);
+            });
+            document.getElementById('grandTotal').innerText = grandTotal.toLocaleString('id-ID');
+        }
+
+        function deleteRow(element) {
+            const row = element.parentElement.parentElement;
+            row.remove();
+            updateRowNumbers();
+            calculateGrandTotal();
+        }
+
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach((row, index) => {
+                row.querySelector('.row-number').innerText = index + 1;
+            });
+        }
+
+        window.onload = function() {
+            addRow();
+            addRow();
+            addRow();
+        };
+    </script>
+</body>
+</html>
     <button class="btn-add" onclick="addRow()">+ Tambah Baris</button>
 
     <script>
