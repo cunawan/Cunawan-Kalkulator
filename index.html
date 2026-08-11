@@ -110,6 +110,82 @@
     </script>
 </body>
 </html>
+    </div>
+
+    <button class="btn-add" onclick="addRow()">+ Tambah Baris</button>
+
+    <script>
+        function formatNumber(value) {
+            let number = value.replace(/\D/g, '');
+            return number ? parseInt(number, 10).toLocaleString('id-ID') : '';
+        }
+
+        function parseNumber(value) {
+            return parseFloat(value.replace(/\./g, '')) || 0;
+        }
+
+        function addRow() {
+            const tbody = document.getElementById('tableBody');
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <td class="row-number"></td>
+                <td><input type="text" placeholder="Barang" class="p-name"></td>
+                <td><input type="text" placeholder="0" class="p-price" oninput="handlePriceInput(this)"></td>
+                <td><input type="number" value="1" class="p-qty" oninput="calculateRow(this)"></td>
+                <td class="p-total" style="font-weight: bold;">0</td>
+                <td><button class="btn-delete" onclick="deleteRow(this)">X</button></td>
+            `;
+            tbody.appendChild(row);
+            updateRowNumbers();
+        }
+
+        function handlePriceInput(element) {
+            element.value = formatNumber(element.value);
+            calculateRow(element);
+        }
+
+        function calculateRow(element) {
+            const row = element.parentElement.parentElement;
+            const price = parseNumber(row.querySelector('.p-price').value);
+            const qty = parseFloat(row.querySelector('.p-qty').value) || 0;
+            const total = price * qty;
+            
+            row.querySelector('.p-total').innerText = total.toLocaleString('id-ID');
+            calculateGrandTotal();
+        }
+
+        function calculateGrandTotal() {
+            let grandTotal = 0;
+            const totals = document.querySelectorAll('.p-total');
+            totals.forEach(td => {
+                grandTotal += parseNumber(td.innerText);
+            });
+            document.getElementById('grandTotal').innerText = grandTotal.toLocaleString('id-ID');
+        }
+
+        function deleteRow(element) {
+            const row = element.parentElement.parentElement;
+            row.remove();
+            updateRowNumbers();
+            calculateGrandTotal();
+        }
+
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach((row, index) => {
+                row.querySelector('.row-number').innerText = index + 1;
+            });
+        }
+
+        window.onload = function() {
+            addRow();
+            addRow();
+            addRow();
+        };
+    </script>
+</body>
+</html>
     <button class="btn-add" onclick="addRow()">+ Tambah Baris</button>
 
     <script>
