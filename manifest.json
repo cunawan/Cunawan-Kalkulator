@@ -1,0 +1,16 @@
+{
+  "name": "Kalkulator Belanja",
+  "short_name": "Kalkulator",
+  "description": "Aplikasi Kalkulator Belanja dan Cetak Nota",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff9c4",
+  "theme_color": "#fbc02d",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2362/2362366.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
